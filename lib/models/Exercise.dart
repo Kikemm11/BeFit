@@ -1,8 +1,6 @@
 /*
-This file contains the City model mapping the sqlite table
-
 - Author: Iván Maldonado (Kikemaldonado11@gmail.com)
-- Develop at: January 2025
+- Develop at: March 2025
 */
 
 import 'dart:convert';
@@ -13,12 +11,14 @@ String exerciseToJson(Exercise data) => json.encode(data.toJson());
 class Exercise {
   int? id;
   String name;
+  String imgPath;
   String description;
   DateTime createdAt;
 
   Exercise({
     this.id,
     required this.name,
+    required this.imgPath,
     required this.description,
     required this.createdAt
   });
@@ -29,6 +29,7 @@ class Exercise {
   factory Exercise.fromJson(Map<String, dynamic> json ) => Exercise(
       id: json["id"],
       name: json["name"] as String,
+      imgPath: json["img_path"],
       description: json["description"] as String,
       createdAt: DateTime.parse(json["created_at"] as String)
   );
@@ -36,6 +37,7 @@ class Exercise {
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
+    "img_path": imgPath,
     "description": description,
     "created_at": createdAt.toIso8601String()
   };
