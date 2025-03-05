@@ -7,6 +7,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:path/path.dart';
 
+import 'package:be_fit/models/models.dart';
+
 
 // Class definition
 class DBProvider {
@@ -299,7 +301,7 @@ class DBProvider {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT UNIQUE NOT NULL,
           img_path TEXT NOT NULL,
-          DESCRIPTION TEXT
+          description TEXT
           created_at TEXT 
           );
           ''');
@@ -395,5 +397,232 @@ class DBProvider {
         version: 2
     );
   }
+
+
+  // Exercise querys
+
+  Future<List<Exercise>> readAllExercises() async {
+    final db = await database;
+    final result = await db!.query(
+      'exercise',
+      orderBy: 'name ASC',
+    );
+    return result.map((e)=> Exercise.fromJson(e)).toList();
+  } 
+  
+  // Biotype querys
+
+  Future<List<Biotype>> readAllBiotypes() async {
+    final db = await database;
+    final result = await db!.query(
+      'biotype',
+      orderBy: 'name ASC',
+    );
+    return result.map((e)=> Biotype.fromJson(e)).toList();
+  } 
+
+  // MuscleGroup querys
+
+  Future<List<MuscleGroup>> readAllMuscleGroups() async {
+    final db = await database;
+    final result = await db!.query(
+      'muscle_group',
+      orderBy: 'name ASC',
+    );
+    return result.map((e)=> MuscleGroup.fromJson(e)).toList();
+  } 
+
+
+  // Profile querys
+
+  Future<List<Profile>> readAllProfile() async {
+    final db = await database;
+    final result = await db!.query(
+      'profile',
+      orderBy: 'name ASC',
+    );
+    return result.map((e)=> Profile.fromJson(e)).toList();
+  } 
+
+  Future<Profile> readOneProfile(int profileId) async {
+    final db = await database;
+    final maps = await db!.query(
+      'profile',
+      columns: ['id', 'name', 'genre', 'biotype_id', 'height', 'weight', 'arm_measure', 'leg_measure', 'created_at'],
+      where: 'id = ?',
+      whereArgs: [profileId],
+    );
+
+    if (maps.isNotEmpty) {
+      return Profile.fromJson(maps.first);
+    }
+    else {
+      throw Exception('Profile not found');
+    }
+  }
+
+  // TrainingPlan querys
+
+  Future<List<TrainingPlan>> readAllTrainingPlans() async {
+    final db = await database;
+    final result = await db!.query(
+      'training_plan',
+      orderBy: 'name ASC',
+    );
+    return result.map((e)=> TrainingPlan.fromJson(e)).toList();
+  } 
+
+  Future<TrainingPlan> readOneTrainingPlan(int trainingPlanId) async {
+    final db = await database;
+    final maps = await db!.query(
+      'training_plan',
+      columns: ['id', 'micro_goal', 'meso_goal', 'macro_goal', 'due_date', 'active', 'created_at'],
+      where: 'id = ?',
+      whereArgs: [trainingPlanId],
+    );
+
+    if (maps.isNotEmpty) {
+      return TrainingPlan.fromJson(maps.first);
+    }
+    else {
+      throw Exception('Training Plan not found');
+    }
+  }
+
+// Insert Method
+
+  Future<TrainingPlan> insertTrainingPlan(TrainingPlan trainingPlan) async {
+    final db =  await database;
+    int id = await db!.insert('training_plan', trainingPlan.toJson());
+    trainingPlan.id = id;
+    return trainingPlan;
+  }
+
+  // Update Method
+
+  Future<TrainingPlan> updateTrainingPlan(TrainingPlan trainingPlan) async {
+    final db =  await database;
+    await db!.update(
+        'training_plan',
+        trainingPlan.toJson(),
+        where: 'id = ?',
+        whereArgs: [trainingPlan.id]
+    );
+    return trainingPlan;
+  }
+
+  // Delete method
+
+  Future<int> deleteTrainingPlan(TrainingPlan trainingPlan) async {
+    final db = await database;
+    return db!.delete(
+        'training_plan',
+        where: 'id = ?',
+        whereArgs: [trainingPlan.id]
+    );
+  }
+
+ // TrainingPlanExercise querys
+
+  Future<List<TrainingPlanExercise>> readAllTrainingPlanExercises() async {
+    final db = await database;
+    final result = await db!.query(
+      'training_plan_exercise',
+      orderBy: 'name ASC',
+    );
+    return result.map((e)=> TrainingPlanExercise.fromJson(e)).toList();
+  } 
+
+
+ // TrainingPlanInfo querys
+
+Future<List<TrainingPlanInfo>> readAllTrainingPlanInfo() async {
+    final db = await database;
+    final result = await db!.query(
+      'training_plan_info',
+      orderBy: 'name ASC',
+    );
+    return result.map((e)=> TrainingPlanInfo.fromJson(e)).toList();
+  } 
+
+  Future<TrainingPlanInfo> readOneTrainingPlanInfo(int trainingPlanInfoId) async {
+    final db = await database;
+    final maps = await db!.query(
+      'training_plan_info',
+      columns: ['id', 'name', 'biotype_id', 'genre', 'muscle_group_id', 'reps', 'series', 'rest', 'created_at'],
+      where: 'id = ?',
+      whereArgs: [trainingPlanInfoId],
+    );
+
+    if (maps.isNotEmpty) {
+      return TrainingPlanInfo.fromJson(maps.first);
+    }
+    else {
+      throw Exception('Training Plan Info not found');
+    }
+  }
+
+ // TrainingSession querys
+
+Future<List<TrainingSession>> readAllTrainingSessions() async {
+    final db = await database;
+    final result = await db!.query(
+      'training_session',
+      orderBy: 'name ASC',
+    );
+    return result.map((e)=> TrainingSession.fromJson(e)).toList();
+  } 
+
+Future<TrainingSession> readOneTrainingSession(int trainingSessionId) async {
+    final db = await database;
+    final maps = await db!.query(
+      'training_session',
+      columns: ['id', 'training_plan_id', 'duration', 'reps_avg', 'done', 'created_at'],
+      where: 'id = ?',
+      whereArgs: [trainingSessionId],
+    );
+
+    if (maps.isNotEmpty) {
+      return TrainingSession.fromJson(maps.first);
+    }
+    else {
+      throw Exception('Training Session not found');
+    }
+  }
+
+// Insert Method
+
+  Future<TrainingSession> insertTrainingSession(TrainingSession trainingSession) async {
+    final db =  await database;
+    int id = await db!.insert('training_session', trainingSession.toJson());
+    trainingSession.id = id;
+    return trainingSession;
+  }
+
+// Update Method
+
+  Future<TrainingSession> updateTrainingSession(TrainingSession trainingSession) async {
+    final db =  await database;
+    await db!.update(
+        'training_session',
+        trainingSession.toJson(),
+        where: 'id = ?',
+        whereArgs: [trainingSession.id]
+    );
+    return trainingSession;
+  }
+
+// Delete method
+
+  Future<int> deleteTrainingSession(TrainingSession trainingSession) async {
+    final db = await database;
+    return db!.delete(
+        'training_session',
+        where: 'id = ?',
+        whereArgs: [trainingSession.id]
+    );
+  }
+
+
 
 }
