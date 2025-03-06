@@ -14,10 +14,10 @@ class TrainingPlanInfoServer with ChangeNotifier {
 
   // Getters
   List<TrainingPlanInfo> get trainingPlanInfos => _trainingPlanInfos;
-  TrainingPlanInfo? get _currentTrainingPlanInfo => _currentTrainingPlanInfo;
+  TrainingPlanInfo? get currentTrainingPlanInfo => _currentTrainingPlanInfo;
 
 
-  // Get all the products
+  // Get all the training plan infos
   Future<String> getAllTrainingPlanInfos() async {
     try {
       _trainingPlanInfos = await DBProvider.db.readAllTrainingPlanInfos();
@@ -28,8 +28,8 @@ class TrainingPlanInfoServer with ChangeNotifier {
     return 'Ok';
   }
 
-// Get one product given its id
-  Future<TrainingPlanInfo?> getOneTrainingPlanInfo(int TrainingPlanInfoId) async {
+// Get one training plan info given its id
+  Future<TrainingPlanInfo?> getOneTrainingPlanInfo(int trainingPlanInfoId) async {
     try {
       _currentTrainingPlanInfo = await DBProvider.db.readOneTrainingPlanInfo(trainingPlanInfoId);
       notifyListeners();

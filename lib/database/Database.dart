@@ -293,7 +293,7 @@ class DBProvider {
   // DB initializer
   initDB() async {
     return await openDatabase(
-        join(await getDatabasesPath(), 'enlanados_app_mobile.db'), onConfigure: _onConfigure,
+        join(await getDatabasesPath(), 'be_fit.db'), onConfigure: _onConfigure,
         onCreate: (db, version) async {
 
           await db.execute('''
@@ -301,7 +301,7 @@ class DBProvider {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT UNIQUE NOT NULL,
           img_path TEXT NOT NULL,
-          description TEXT
+          description TEXT,
           created_at TEXT 
           );
           ''');
@@ -311,9 +311,9 @@ class DBProvider {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT UNIQUE NOT NULL,
           description TEXT NOT NULL,
-          created_at TEXT,
-        );
-        ''');
+          created_at TEXT
+          );
+          ''');
 
           await db.execute('''
           CREATE TABLE muscle_group (
@@ -328,6 +328,7 @@ class DBProvider {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT UNIQUE NOT NULL,
           genre TEXT NOT NULL,
+          age INTEGER NOT NULL,
           biotype_id INTEGER NOT NULL,
           height REAL NOT NULL,
           weight REAL NOT NULL,
@@ -435,22 +436,13 @@ class DBProvider {
 
   // Profile querys
 
-  Future<List<Profile>> readAllProfile() async {
-    final db = await database;
-    final result = await db!.query(
-      'profile',
-      orderBy: 'name ASC',
-    );
-    return result.map((e)=> Profile.fromJson(e)).toList();
-  } 
 
-  Future<Profile> readOneProfile(int profileId) async {
+  Future<Profile> readProfile() async {
     final db = await database;
     final maps = await db!.query(
       'profile',
-      columns: ['id', 'name', 'genre', 'biotype_id', 'height', 'weight', 'arm_measure', 'leg_measure', 'created_at'],
-      where: 'id = ?',
-      whereArgs: [profileId],
+      columns: ['id', 'name', 'genre', 'age', 'biotype_id', 'height', 'weight', 'arm_measure', 'leg_measure', 'created_at'],
+      where: 'id = 1',
     );
 
     if (maps.isNotEmpty) {
@@ -459,6 +451,27 @@ class DBProvider {
     else {
       throw Exception('Profile not found');
     }
+  }
+
+  // Insert Profile
+
+  Future<Profile> insertProfile(Profile profile) async {
+    final db =  await database;
+    await db!.insert('profile', profile.toJson());
+    return profile;
+  }
+
+  // Update Method
+
+  Future<Profile> updateProfile(Profile profile) async {
+    final db =  await database;
+    await db!.update(
+        'profile',
+        profile.toJson(),
+        where: 'id = ?',
+        whereArgs: [profile.id]
+    );
+    return profile;
   }
 
   // TrainingPlan querys
@@ -489,7 +502,7 @@ class DBProvider {
     }
   }
 
-// Insert Method
+  // Insert Method
 
   Future<TrainingPlan> insertTrainingPlan(TrainingPlan trainingPlan) async {
     final db =  await database;
@@ -536,7 +549,7 @@ class DBProvider {
 
  // TrainingPlanInfo querys
 
-Future<List<TrainingPlanInfo>> readAllTrainingPlanInfo() async {
+Future<List<TrainingPlanInfo>> readAllTrainingPlanInfos() async {
     final db = await database;
     final result = await db!.query(
       'training_plan_info',

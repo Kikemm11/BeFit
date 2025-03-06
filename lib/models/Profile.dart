@@ -12,6 +12,7 @@ class Profile {
   int? id;
   String name;
   String genre;
+  int age;
   int biotypeId;
   double height;
   double weight;
@@ -23,13 +24,15 @@ class Profile {
     this.id,
     required this.name,
     required this.genre,
+    required this.age,
     required this.biotypeId,
     required this.height,
     required this.weight,
     required this.armMeasure,
     required this.legMeasure,
-    required this.createdAt
-  });
+    DateTime? createdAt,
+  }
+  ): createdAt = createdAt ?? DateTime.now();
 
 
   // Convertion methods
@@ -38,6 +41,7 @@ class Profile {
       id: json["id"],
       name: json["name"] as String,
       genre: json["genre"] as String,
+      age: json["age"] as int,
       biotypeId: json["biotype_id"] as int,
       height: json["height"] as double,
       weight: json["weight"] as double,
@@ -50,6 +54,7 @@ class Profile {
     "id": id,
     "name": name,
     "genre": genre,
+    "age": age,
     "biotype_id": biotypeId,
     "height": height,
     "weight": weight,

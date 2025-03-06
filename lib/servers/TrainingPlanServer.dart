@@ -9,16 +9,16 @@ import 'package:be_fit/database/Database.dart';
 import 'package:be_fit/models/TrainingPlan.dart';
 
 class TrainingPlanServer with ChangeNotifier {
-  List<TrainingPlan> _trainingPlan = [];
+  List<TrainingPlan> _trainingPlans = [];
   TrainingPlan? _currentTrainingPlan;
 
 
   // Getters
   List<TrainingPlan> get trainingPlans => _trainingPlans;
-  TrainingPlan? get _currentTrainingPlan => _currentTrainingPlan;
+  TrainingPlan? get currentTrainingPlan => _currentTrainingPlan;
 
 
-  // Get all the products
+  // Get all the training plans
   Future<String> getAllTrainingPlans() async {
     try {
       _trainingPlans = await DBProvider.db.readAllTrainingPlans();
@@ -29,8 +29,8 @@ class TrainingPlanServer with ChangeNotifier {
     return 'Ok';
   }
 
-  // Get one product given its id
-  Future<TrainingPlan?> getOneTrainingPlan(int TrainingPlanId) async {
+  // Get one training plan given its id
+  Future<TrainingPlan?> getOneTrainingPlan(int trainingPlanId) async {
     try {
       _currentTrainingPlan = await DBProvider.db.readOneTrainingPlan(trainingPlanId);
       notifyListeners();
@@ -40,7 +40,7 @@ class TrainingPlanServer with ChangeNotifier {
     }
   }
 
-  // Insert a product and manage UNIQUE constraint
+  // Insert a training plan and manage UNIQUE constraint
   Future<String> insertTrainingPlan(TrainingPlan trainingPlan) async {
     try {
       await DBProvider.db.insertTrainingPlan(trainingPlan);
@@ -54,7 +54,7 @@ class TrainingPlanServer with ChangeNotifier {
     return await getAllTrainingPlans();
   }
 
-  // Update a porduct given its id
+  // Update a training plan given its id
   Future<String> updateTrainingPlan(TrainingPlan trainingPlan) async {
     try {
       await DBProvider.db.updateTrainingPlan(trainingPlan);
@@ -68,7 +68,7 @@ class TrainingPlanServer with ChangeNotifier {
     return await getAllTrainingPlans();
   }
 
-  // Delete a product given its id
+  // Delete a training plan given its id
   Future<String> deleteTrainingPlan(TrainingPlan trainingPlan) async {
     try {
       await DBProvider.db.deleteTrainingPlan(trainingPlan);

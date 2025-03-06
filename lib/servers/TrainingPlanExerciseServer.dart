@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:be_fit/database/Database.dart';
 import 'package:be_fit/models/TrainingPlanExercise.dart';
 
-class ProfileServer with ChangeNotifier {
+class TrainingPlanExerciseServer with ChangeNotifier {
   List<TrainingPlanExercise> _trainingPlanExercises = [];
 
 
@@ -15,7 +15,7 @@ class ProfileServer with ChangeNotifier {
   List<TrainingPlanExercise> get trainingPlanExercises => _trainingPlanExercises;
 
 
-  // Get all the products
+  // Get all the training plan exercises
   Future<String> getAllTrainingPlanExercises() async {
     try {
       _trainingPlanExercises = await DBProvider.db.readAllTrainingPlanExercises();

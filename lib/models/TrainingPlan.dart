@@ -33,9 +33,9 @@ class TrainingPlan {
   factory TrainingPlan.fromJson(Map<String, dynamic> json ) => TrainingPlan(
       id: json["id"],
       microGoal: json["micro_goal"] as int,
-      mesoGoal: json["meso_goal"], as int,
+      mesoGoal: json["meso_goal"] as int,
       macroGoal: json["macro_goal"] as int,
-      dueDate: json["due_date"] as String,
+      dueDate: DateTime.parse(json["due_date"] as String),
       active: (json["active"] as int) == 1 ? true : false,
       createdAt: DateTime.parse(json["created_at"] as String)
   );

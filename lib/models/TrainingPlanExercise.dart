@@ -14,7 +14,7 @@ class TrainingPlanExercise {
   int exerciseId;
   DateTime createdAt;
 
-  Exercise({
+  TrainingPlanExercise({
     this.id,
     required this.trainingPlanInfoId,
     required this.exerciseId,

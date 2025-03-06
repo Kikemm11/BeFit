@@ -5,7 +5,7 @@
 
 
 export 'ExerciseServer.dart';
-export 'Biotypeserver.dart';
+export 'BiotypeServer.dart';
 export 'MuscleGroupServer.dart';
 export 'ProfileServer.dart';
 export 'TrainingPlanServer.dart';

@@ -14,10 +14,10 @@ class TrainingSessionServer with ChangeNotifier {
 
   // Getters
   List<TrainingSession> get trainingSessions => _trainingSessions;
-  TrainingSession? get _currentTrainingSession => _currentTrainingSession;
+  TrainingSession? get currentTrainingSession => _currentTrainingSession;
 
 
-  // Get all the products
+  // Get all the training sessions
   Future<String> getAllTrainingSessions() async {
     try {
       _trainingSessions = await DBProvider.db.readAllTrainingSessions();
@@ -28,8 +28,8 @@ class TrainingSessionServer with ChangeNotifier {
     return 'Ok';
   }
 
-  // Get one product given its id
-  Future<TrainingSession?> getOneTrainingSession(int TrainingSessionId) async {
+  // Get one training session given its id
+  Future<TrainingSession?> getOneTrainingSession(int trainingSessionId) async {
     try {
       _currentTrainingSession = await DBProvider.db.readOneTrainingSession(trainingSessionId);
       notifyListeners();
@@ -39,7 +39,7 @@ class TrainingSessionServer with ChangeNotifier {
     }
   }
 
-  // Insert a product and manage UNIQUE constraint
+  // Insert a training session and manage UNIQUE constraint
   Future<String> insertTrainingSession(TrainingSession trainingSession) async {
     try {
       await DBProvider.db.insertTrainingSession(trainingSession);
@@ -53,7 +53,7 @@ class TrainingSessionServer with ChangeNotifier {
     return await getAllTrainingSessions();
   }
 
-  // Update a porduct given its id
+  // Update a training session given its id
   Future<String> updateTrainingSession(TrainingSession trainingSession) async {
     try {
       await DBProvider.db.updateTrainingSession(trainingSession);
@@ -67,7 +67,7 @@ class TrainingSessionServer with ChangeNotifier {
     return await getAllTrainingSessions();
   }
 
-  // Delete a product given its id
+  // Delete a training session given its id
   Future<String> deleteTrainingSession(TrainingSession trainingSession) async {
     try {
       await DBProvider.db.deleteTrainingSession(trainingSession);
