@@ -171,10 +171,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Icon(
-                                            Icons.airline_seat_legroom_extra,
-                                            color: Colors.white,
-                                            size: 50,
+                                          Image.asset(
+                                              'lib/assets/bottom_body_plan.png',
+                                            height: 150,
+                                            width: 200,
                                           ),
                                           SizedBox(height: 20),
                                           Text(
@@ -225,10 +225,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
-                                                Icon(
-                                                  CupertinoIcons.person,
-                                                  color: Colors.white,
-                                                  size: 50,
+                                                Image.asset(
+                                                  'lib/assets/upper_body_plan.png',
+                                                  height: 80,
+                                                  width: 150,
                                                 ),
                                                 SizedBox(height: 20),
                                                 Text(
@@ -272,10 +272,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                             child: Column(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
-                                                Icon(
-                                                  Icons.fitness_center,
-                                                  color: Colors.white,
-                                                  size: 50,
+                                                Image.asset(
+                                                  'lib/assets/abs_plan.png',
+                                                  height: 80,
+                                                  width: 200,
                                                 ),
                                                 SizedBox(height: 20),
                                                 Text(
