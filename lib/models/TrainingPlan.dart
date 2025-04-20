@@ -10,6 +10,7 @@ String trainingPlanToJson(TrainingPlan data) => json.encode(data.toJson());
 
 class TrainingPlan {
   int? id;
+  int trainingPlanInfoId;
   int microGoal;
   int mesoGoal;
   int macroGoal;
@@ -19,19 +20,26 @@ class TrainingPlan {
 
   TrainingPlan({
     this.id,
-    required this.microGoal,
-    required this.mesoGoal,
-    required this.macroGoal,
-    required this.dueDate,
-    required this.active,
-    required this.createdAt
-  });
+    required this.trainingPlanInfoId,
+    this.microGoal = 10,
+    this.mesoGoal = 20,
+    this.macroGoal = 30,
+    DateTime? dueDate,
+    this.active = true,
+    DateTime? createdAt,
+  })  : dueDate = dueDate ?? DateTime(
+    DateTime.now().year,
+    DateTime.now().month + 3,
+    DateTime.now().day,
+  ),
+        createdAt = createdAt ?? DateTime.now();
 
 
   // Convertion methods
 
   factory TrainingPlan.fromJson(Map<String, dynamic> json ) => TrainingPlan(
       id: json["id"],
+      trainingPlanInfoId: json["training_plan_info_id"],
       microGoal: json["micro_goal"] as int,
       mesoGoal: json["meso_goal"] as int,
       macroGoal: json["macro_goal"] as int,
@@ -42,6 +50,7 @@ class TrainingPlan {
 
   Map<String, dynamic> toJson() => {
     "id": id,
+    "training_plan_info_id": trainingPlanInfoId,
     "micro_goal": microGoal,
     "meso_goal": mesoGoal,
     "macro_goal": macroGoal,

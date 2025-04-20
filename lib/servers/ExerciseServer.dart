@@ -27,4 +27,15 @@ class ExerciseServer with ChangeNotifier {
     return 'Ok';
   }
 
+  // Query all the exercises related to a plan info
+  Future<String> getAllExercisesByPlanInfo(int planInfoId) async {
+    try {
+      _exercises = await DBProvider.db.readAllExercisesByPlanInfo(planInfoId);
+      notifyListeners();
+    } catch (e) {
+      return e.toString();
+    }
+    return 'Ok';
+  }
+
 }

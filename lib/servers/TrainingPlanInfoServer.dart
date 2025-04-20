@@ -28,7 +28,7 @@ class TrainingPlanInfoServer with ChangeNotifier {
     return 'Ok';
   }
 
-// Get one training plan info given its id
+  // Get one training plan info given its id
   Future<TrainingPlanInfo?> getOneTrainingPlanInfo(int trainingPlanInfoId) async {
     try {
       _currentTrainingPlanInfo = await DBProvider.db.readOneTrainingPlanInfo(trainingPlanInfoId);
@@ -36,6 +36,17 @@ class TrainingPlanInfoServer with ChangeNotifier {
       return _currentTrainingPlanInfo;
     } catch (e) {
       return null;
+    }
+  }
+
+  // Get training plan info given its biotypeId and genre
+  Future<List<TrainingPlanInfo?>> getTrainingPlansInfoByBiotypeAndGenre(int biotypeId, String genre) async {
+    try {
+      _trainingPlanInfos = await DBProvider.db.readTrainingPlansByBiotypeAndGenre(biotypeId, genre);
+      notifyListeners();
+      return _trainingPlanInfos;
+    } catch (e) {
+      return [];
     }
   }
 

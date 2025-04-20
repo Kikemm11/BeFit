@@ -3,6 +3,8 @@
 - Develop at: March 2025
 */
 
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:be_fit/database/Database.dart';
 
@@ -11,11 +13,18 @@ import 'package:be_fit/models/TrainingPlan.dart';
 class TrainingPlanServer with ChangeNotifier {
   List<TrainingPlan> _trainingPlans = [];
   TrainingPlan? _currentTrainingPlan;
+  TrainingPlan? _upperBodyTrainingPlan;
+  TrainingPlan? _bottomBodyTrainingPlan;
+  TrainingPlan? _absTrainingPlan;
+
 
 
   // Getters
   List<TrainingPlan> get trainingPlans => _trainingPlans;
   TrainingPlan? get currentTrainingPlan => _currentTrainingPlan;
+  TrainingPlan? get upperBodyTrainingPlan => _upperBodyTrainingPlan;
+  TrainingPlan? get bottomBodyTrainingPlan => _bottomBodyTrainingPlan;
+  TrainingPlan? get absTrainingPlan => _absTrainingPlan;
 
 
   // Get all the training plans
@@ -40,16 +49,57 @@ class TrainingPlanServer with ChangeNotifier {
     }
   }
 
-  // Insert a training plan and manage UNIQUE constraint
+  // Check if the user already have an active training plan given a training plan info
+  Future<bool> hasTrainingPlanActive(int trainingPlanInfoId) async {
+    try {
+      return await DBProvider.db.readOneTrainingPlanByInfoAndActive(trainingPlanInfoId);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Get upper body training plan
+  Future<String> getUpperBodyTrainingPlanByInfo(int trainingPlanInfoId) async {
+    try {
+      _upperBodyTrainingPlan = await DBProvider.db.readOneTrainingPlanByInfo(trainingPlanInfoId);
+      notifyListeners();
+      return 'ok';
+    } catch (e) {
+      _upperBodyTrainingPlan = null;
+      return 'null';
+    }
+  }
+
+  // Get bottom body training plan
+  Future<String> getBottomBodyTrainingPlanByInfo(int trainingPlanInfoId) async {
+    try {
+      _bottomBodyTrainingPlan = await DBProvider.db.readOneTrainingPlanByInfo(trainingPlanInfoId);
+      notifyListeners();
+      return 'ok';
+    } catch (e) {
+      _bottomBodyTrainingPlan = null;
+      return 'null';
+    }
+  }
+
+  // Get abs training plan
+  Future<String> getAbsBodyTrainingPlanByInfo(int trainingPlanInfoId) async {
+    try {
+      _absTrainingPlan = await DBProvider.db.readOneTrainingPlanByInfo(trainingPlanInfoId);
+      notifyListeners();
+      return 'ok';
+    } catch (e) {
+      _absTrainingPlan = null;
+      return 'null';
+    }
+  }
+
+  // Insert a training plan
   Future<String> insertTrainingPlan(TrainingPlan trainingPlan) async {
     try {
       await DBProvider.db.insertTrainingPlan(trainingPlan);
     } catch(e){
-      if (e.toString().contains('UNIQUE')) {
-        return 'UNIQUE';
-      } else {
-        return e.toString();
-      }
+      return e.toString();
     }
     return await getAllTrainingPlans();
   }

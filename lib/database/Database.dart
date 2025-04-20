@@ -409,8 +409,22 @@ class DBProvider {
       orderBy: 'name ASC',
     );
     return result.map((e)=> Exercise.fromJson(e)).toList();
-  } 
-  
+  }
+
+  Future<List<Exercise>> readAllExercisesByPlanInfo(int planInfoId) async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> result = await db!.rawQuery('''
+    SELECT exercise.*
+    FROM exercise
+    JOIN training_plan_exercise ON exercise.id = training_plan_exercise.exercise_id
+    WHERE training_plan_exercise.training_plan_info_id = ?
+  ''', [planInfoId]);
+
+    return result.map((json) => Exercise.fromJson(json)).toList();
+  }
+
+
   // Biotype querys
 
   Future<List<Biotype>> readAllBiotypes() async {
@@ -420,7 +434,24 @@ class DBProvider {
       orderBy: 'name ASC',
     );
     return result.map((e)=> Biotype.fromJson(e)).toList();
-  } 
+  }
+
+  Future<Biotype> readOneBiotype(int biotypeId) async {
+    final db = await database;
+    final maps = await db!.query(
+      'biotype',
+      columns: ['id', 'name', 'description', 'created_at'],
+      where: 'id = ?',
+      whereArgs: [biotypeId],
+    );
+
+    if (maps.isNotEmpty) {
+      return Biotype.fromJson(maps.first);
+    }
+    else {
+      throw Exception('Biotype not found');
+    }
+  }
 
   // MuscleGroup querys
 
@@ -480,7 +511,7 @@ class DBProvider {
     final db = await database;
     final result = await db!.query(
       'training_plan',
-      orderBy: 'name ASC',
+      orderBy: 'id ASC',
     );
     return result.map((e)=> TrainingPlan.fromJson(e)).toList();
   } 
@@ -489,7 +520,7 @@ class DBProvider {
     final db = await database;
     final maps = await db!.query(
       'training_plan',
-      columns: ['id', 'micro_goal', 'meso_goal', 'macro_goal', 'due_date', 'active', 'created_at'],
+      columns: ['id', 'training_plan_info_id', 'micro_goal', 'meso_goal', 'macro_goal', 'due_date', 'active', 'created_at'],
       where: 'id = ?',
       whereArgs: [trainingPlanId],
     );
@@ -499,6 +530,40 @@ class DBProvider {
     }
     else {
       throw Exception('Training Plan not found');
+    }
+  }
+
+  Future<TrainingPlan> readOneTrainingPlanByInfo(int trainingPlanInfoId) async {
+    final db = await database;
+    final maps = await db!.query(
+      'training_plan',
+      columns: ['id', 'training_plan_info_id', 'micro_goal', 'meso_goal', 'macro_goal', 'due_date', 'active', 'created_at'],
+      where: 'training_plan_info_id = ? AND active = 1',
+      whereArgs: [trainingPlanInfoId],
+    );
+
+    if (maps.isNotEmpty) {
+      return TrainingPlan.fromJson(maps.first);
+    }
+    else {
+      throw Exception('Training Plan not found');
+    }
+  }
+
+  Future<bool> readOneTrainingPlanByInfoAndActive(int trainingPlanInfoId) async {
+    final db = await database;
+    final maps = await db!.query(
+      'training_plan',
+      columns: ['id', 'training_plan_info_id', 'micro_goal', 'meso_goal', 'macro_goal', 'due_date', 'active', 'created_at'],
+      where: 'training_plan_info_id = ? AND active = 1',
+      whereArgs: [trainingPlanInfoId],
+    );
+
+    if (maps.isNotEmpty) {
+      return true;
+    }
+    else {
+      return false;
     }
   }
 
@@ -569,6 +634,24 @@ Future<List<TrainingPlanInfo>> readAllTrainingPlanInfos() async {
 
     if (maps.isNotEmpty) {
       return TrainingPlanInfo.fromJson(maps.first);
+    }
+    else {
+      throw Exception('Training Plan Info not found');
+    }
+  }
+
+  Future<List<TrainingPlanInfo>> readTrainingPlansByBiotypeAndGenre(int biotype, String genre) async {
+    final db = await database;
+    final maps = await db!.query(
+      'training_plan_info',
+      columns: ['id', 'name', 'biotype_id', 'genre', 'muscle_group_id', 'reps', 'series', 'rest', 'created_at'],
+      where: 'biotype_id = ? AND genre = ?',
+      orderBy: 'id ASC',
+      whereArgs: [biotype, genre],
+    );
+
+    if (maps.isNotEmpty) {
+      return maps.map((e)=> TrainingPlanInfo.fromJson(e)).toList();
     }
     else {
       throw Exception('Training Plan Info not found');

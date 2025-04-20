@@ -9,10 +9,12 @@ import 'package:be_fit/models/Biotype.dart';
 
 class BiotypeServer with ChangeNotifier {
   List<Biotype> _biotypes = [];
+  Biotype? _currentBiotype;
 
 
   // Getters
   List<Biotype> get biotypes => _biotypes;
+  Biotype? get currentBiotype => _currentBiotype;
 
 
   // Get all the products
@@ -24,6 +26,17 @@ class BiotypeServer with ChangeNotifier {
       return e.toString();
     }
     return 'Ok';
+  }
+
+  // Get one biotype by the given id
+  Future<Biotype?> getOneBiotype(int biotypeId) async {
+    try {
+      _currentBiotype = await DBProvider.db.readOneBiotype(biotypeId);
+      notifyListeners();
+      return _currentBiotype;
+    } catch (e) {
+      return null;
+    }
   }
 
 }
