@@ -5,6 +5,8 @@
 
 import 'package:flutter/material.dart';
 
+import 'BeFitBiotypeDialogWidget.dart';
+
 class BeFitDropDownButtonFieldWidget extends StatefulWidget {
   final String label;
   final List<dynamic> values;
@@ -32,23 +34,50 @@ class _BeFitDropDownButtonFieldWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField(
+    return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         labelText: widget.label,
         border: OutlineInputBorder(),
       ),
-      items: widget.values
-          .map((value) => DropdownMenuItem(
-        value: value.id.toString(),
-        child: Row(
-          children: [
-            Icon(widget.icon, color: Colors.cyan[600]),
-            SizedBox(width: 8.0),
-            Text(value.name),
-          ],
-        ),
-      ))
-          .toList(),
+      items: widget.values.map((value) {
+        return DropdownMenuItem(
+          value: value.id.toString(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(widget.icon, color: Colors.cyan[600]),
+                  SizedBox(width: 8.0),
+                  Text(value.name),
+                ],
+              ),
+              IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return BeFitBiotypeDialog(biotype: value);
+                    },
+                  );
+                },
+                icon: Icon(Icons.info, size: 20, color: Colors.yellow),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+      selectedItemBuilder: (BuildContext context) {
+        return widget.values.map((value) {
+          return Row(
+            children: [
+              Icon(widget.icon, color: Colors.cyan[600]),
+              SizedBox(width: 8.0),
+              Text(value.name),
+            ],
+          );
+        }).toList();
+      },
       onChanged: (value) {
         setState(() {
           widget.controller = int.tryParse(value!);
@@ -63,5 +92,6 @@ class _BeFitDropDownButtonFieldWidgetState
       ),
       validator: widget.validator,
     );
+
   }
 }

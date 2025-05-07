@@ -5,6 +5,7 @@
 
 import 'dart:ffi';
 
+import 'package:be_fit/models/models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:be_fit/database/Database.dart';
 
@@ -95,9 +96,28 @@ class TrainingPlanServer with ChangeNotifier {
   }
 
   // Insert a training plan
-  Future<String> insertTrainingPlan(TrainingPlan trainingPlan) async {
+  Future<String> insertTrainingPlan(TrainingPlan trainingPlan, List<int> selectedDays) async {
+    List<DateTime> result = [];
+    DateTime currentDate = DateTime.now();
     try {
-      await DBProvider.db.insertTrainingPlan(trainingPlan);
+      TrainingPlan newTrainingPlan= await DBProvider.db.insertTrainingPlan(trainingPlan);
+
+      while (!currentDate.isAfter(newTrainingPlan.dueDate)) {
+        int weekdayIndex = (currentDate.weekday + 6) % 7; // Map to 0 (Mon) - 6 (Sun)
+
+        if (selectedDays.contains(weekdayIndex)) {
+          result.add(currentDate);
+        }
+
+        currentDate = currentDate.add(const Duration(days: 1));
+      }
+
+      for (final date in result)
+        {
+          TrainingSession trainingSession = TrainingSession(trainingPlanId: newTrainingPlan.id!, createdAt: date);
+          await DBProvider.db.insertTrainingSession(trainingSession);
+        }
+
     } catch(e){
       return e.toString();
     }

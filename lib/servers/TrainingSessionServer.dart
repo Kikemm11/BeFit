@@ -39,6 +39,17 @@ class TrainingSessionServer with ChangeNotifier {
     }
   }
 
+  // Get all the training sessions of a plan
+  Future<String> getTrainingSessionsPlan(int trainingPlanId) async {
+    try {
+      _trainingSessions = await DBProvider.db.readTrainingSessionsPlan(trainingPlanId);
+      notifyListeners();
+    } catch (e) {
+      return e.toString();
+    }
+    return 'Ok';
+  }
+
   // Insert a training session and manage UNIQUE constraint
   Future<String> insertTrainingSession(TrainingSession trainingSession) async {
     try {
@@ -54,7 +65,19 @@ class TrainingSessionServer with ChangeNotifier {
   }
 
   // Update a training session given its id
-  Future<String> updateTrainingSession(TrainingSession trainingSession) async {
+  Future<String> updateTrainingSession(TrainingSession trainingSession, Map<int, TextEditingController> exerciseReps, int trainingDuration) async {
+
+    int avgReps;
+    int sum = 0;
+    for (final key in exerciseReps.keys)
+      {
+        sum += (( exerciseReps[key]!.text != '') ? int.tryParse(exerciseReps[key]!.text) : 0)!;
+      }
+    avgReps = (sum / exerciseReps.length).toInt();
+    trainingSession.repsAvg = avgReps;
+    trainingSession.done = true;
+    trainingSession.duration = trainingDuration % 60;
+
     try {
       await DBProvider.db.updateTrainingSession(trainingSession);
     } catch(e){

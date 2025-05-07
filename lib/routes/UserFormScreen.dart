@@ -251,7 +251,8 @@ class _UserFormScreenState extends State<UserFormScreen> {
                                             backgroundColor: Colors.green,
                                           ),
                                         );
-                                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                                        Navigator.pop(context);
+                                        Navigator.pushNamed(context, '/');
                                       }
                                       else {
                                         ScaffoldMessenger.of(context).showSnackBar(

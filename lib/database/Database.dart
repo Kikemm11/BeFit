@@ -388,7 +388,7 @@ class DBProvider {
           reps_avg INTEGER NOT NULL,
           done INTEGER NOT NULL,
           created_at TEXT,
-          FOREIGN KEY (training_plan_id) REFERENCES training_plan(id)
+          FOREIGN KEY (training_plan_id) REFERENCES training_plan(id) ON DELETE CASCADE
           );
           ''');
 
@@ -609,7 +609,8 @@ class DBProvider {
       orderBy: 'name ASC',
     );
     return result.map((e)=> TrainingPlanExercise.fromJson(e)).toList();
-  } 
+  }
+
 
 
  // TrainingPlanInfo querys
@@ -664,7 +665,7 @@ Future<List<TrainingSession>> readAllTrainingSessions() async {
     final db = await database;
     final result = await db!.query(
       'training_session',
-      orderBy: 'name ASC',
+      orderBy: 'id ASC',
     );
     return result.map((e)=> TrainingSession.fromJson(e)).toList();
   } 
@@ -684,6 +685,18 @@ Future<TrainingSession> readOneTrainingSession(int trainingSessionId) async {
     else {
       throw Exception('Training Session not found');
     }
+  }
+
+  Future<List<TrainingSession>> readTrainingSessionsPlan(int trainingPlanId) async {
+    final db = await database;
+    final result = await db!.query(
+      'training_session',
+      columns: ['id', 'training_plan_id', 'duration', 'reps_avg', 'done', 'created_at'],
+      where: 'training_plan_id = ?',
+      whereArgs: [trainingPlanId],
+    );
+    return result.map((e)=> TrainingSession.fromJson(e)).toList();
+
   }
 
 // Insert Method

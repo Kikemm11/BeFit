@@ -12,10 +12,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _leftIsPressed = false;
-  bool _upperRightIsPressed = false;
-  bool _downRightIsPressed = false;
-
   Profile? profile;
   TrainingPlanInfo? upperPlan;
   TrainingPlanInfo? bottomPlan;
@@ -149,9 +145,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                 flex: 1,
                                 child: GestureDetector(
                                   onTap: () {
-                                    setState(() {
-                                      _leftIsPressed = !_leftIsPressed;
-                                    });
+                                    if (bottomBodyPlan != null)
+                                    {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/training-plan',
+                                        arguments: bottomBodyPlan,
+                                      );
+                                    }
                                   },
                                   onLongPress: (){
                                     if (bottomBodyPlan != null)
@@ -203,9 +204,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Expanded(
                                       child: GestureDetector(
                                         onTap: () {
-                                          setState(() {
-                                            _upperRightIsPressed = !_upperRightIsPressed;
-                                          });
+                                          if (upperBodyPlan != null)
+                                          {
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/training-plan',
+                                              arguments: upperBodyPlan,
+                                            );
+                                          }
                                         },
                                         onLongPress: (){
                                           if (upperBodyPlan != null)
@@ -250,9 +256,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Expanded(
                                       child: GestureDetector(
                                         onTap: () {
-                                          setState(() {
-                                            _downRightIsPressed = !_downRightIsPressed;
-                                          });
+                                          if (absPlan != null)
+                                          {
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/training-plan',
+                                              arguments: absPlan,
+                                            );
+                                          }
                                         },
                                         onLongPress: (){
                                           if (absPlan != null)

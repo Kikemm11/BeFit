@@ -11,17 +11,17 @@ String trainingSessionToJson(TrainingSession data) => json.encode(data.toJson())
 class TrainingSession {
   int? id;
   int trainingPlanId;
-  double duration;
-  int repsAvg;
-  bool done;
+  double? duration;
+  int? repsAvg;
+  bool? done;
   DateTime createdAt;
 
   TrainingSession({
     this.id,
     required this.trainingPlanId,
-    required this.duration,
-    required this.repsAvg,
-    required this.done,
+    this.duration = 0,
+    this.repsAvg = 0,
+    this.done = false,
     required this.createdAt
   });
 
@@ -42,7 +42,7 @@ class TrainingSession {
     "training_plan_id": trainingPlanId,
     "duration": duration,
     "reps_avg": repsAvg,
-    "done": (done) ? 1 : 0,
+    "done": (done!) ? 1 : 0,
     "created_at": createdAt.toIso8601String()
   };
 

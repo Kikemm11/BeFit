@@ -28,6 +28,9 @@ class _BeFitCreateTrainingPlanAlertDialogState
     extends State<BeFitCreateTrainingPlanAlertDialog> {
   int _selectedPlan = -1;
 
+  List<String> weekdays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  List<int> selectedDays = [];
+
   @override
   Widget build(BuildContext context) {
     return Consumer<TrainingPlanServer>(
@@ -39,7 +42,7 @@ class _BeFitCreateTrainingPlanAlertDialogState
             child: Container(
               padding: const EdgeInsets.all(20),
               width: 300,
-              height: 400,
+              height: 550,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -62,6 +65,41 @@ class _BeFitCreateTrainingPlanAlertDialogState
                     ],
                   ),
                   const SizedBox(height: 30),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Selecciona 3 días de entrenamiento:'
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Wrap(
+                    spacing: 6,
+                    children: List.generate(weekdays.length, (index) {
+                      return ChoiceChip(
+                        label: Text(
+                          weekdays[index],
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                        selected: selectedDays.contains(index),
+                        onSelected: (selected) {
+                          setState(() {
+                            if (selected && selectedDays.length < 3) {
+                              selectedDays.add(index);
+                            } else {
+                              selectedDays.remove(index);
+                            }
+                          });
+                        },
+                        selectedColor: Colors.cyan[600],
+                        backgroundColor: Colors.cyan[100],
+                        labelPadding: EdgeInsets.zero,
+                        padding: const EdgeInsets.all(8),
+                        shape: const CircleBorder(),
+                        visualDensity: VisualDensity.compact, // tight spacing
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 30),
                   Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -72,7 +110,7 @@ class _BeFitCreateTrainingPlanAlertDialogState
                         ),
                         const SizedBox(width: 15),
                         ElevatedButton(
-                          onPressed: _selectedPlan == -1
+                          onPressed: _selectedPlan == -1 || selectedDays.length != 3
                               ? null
                               : () async {
 
@@ -91,13 +129,13 @@ class _BeFitCreateTrainingPlanAlertDialogState
                             else
                               {
                                 TrainingPlan trainingPlan = TrainingPlan(trainingPlanInfoId: _selectedPlan);
-                                String result = await context.read<TrainingPlanServer>().insertTrainingPlan(trainingPlan);
+                                String result = await context.read<TrainingPlanServer>().insertTrainingPlan(trainingPlan, selectedDays);
 
                                 if (result == 'Ok')
                                   {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                        content: Text('plan creado con éxito!'),
+                                        content: Text('Plan creado con éxito!'),
                                         duration: Duration(seconds: 2),
                                         backgroundColor: Colors.green,
                                       ),
@@ -105,7 +143,6 @@ class _BeFitCreateTrainingPlanAlertDialogState
                                   }
                                 else
                                 {
-                                  print(result);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text('Ups! Error al crear plan'),
